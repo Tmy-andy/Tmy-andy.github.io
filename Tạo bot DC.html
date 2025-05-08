@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tổng Hợp Bot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px;
+      color: #333;
+    }
+    h2 {
+      color: #2c3e50;
+      margin-top: 40px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    code {
+      background-color: #eef;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .emoji {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>1. Bảng Tổng Hợp Tình Huống và Câu Phản Hồi Mặc Định</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Tình huống</th>
+        <th><code>response_key</code></th>
+        <th>Ví dụ phản hồi mặc định</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>❌ Sai cú pháp lệnh</td><td><code>error.syntax</code></td><td>"Oh wow, you're really trying, aren't you? 😏 Keep going, I believe in you... sort of."</td></tr>
+      <tr><td>2</td><td>✅ Tạo bảng thành công</td><td><code>success.create_table</code></td><td>"Yay! A new table is born. Try not to ruin it, okay? 😎"</td></tr>
+      <tr><td>3</td><td>➕ Thêm dòng thành công</td><td><code>success.add_row</code></td><td>"Nice job! You're not completely hopeless. 😜"</td></tr>
+      <tr><td>4</td><td>🔁 Hỏi lại có muốn thêm dòng nữa không</td><td><code>prompt.add_more_rows</code></td><td>"You done? Or wanna torture me with more data?"</td></tr>
+      <tr><td>5</td><td>🛑 Người dùng hủy giữa chừng</td><td><code>cancelled.input</code></td><td>"What? Giving up? Again? Tsk."</td></tr>
+      <tr><td>6</td><td>🔍 Không tìm thấy bảng theo tên</td><td><code>error.table_not_found</code></td><td>"Hmm… that table doesn't exist. Did you dream it up or something?"</td></tr>
+      <tr><td>7</td><td>📜 Danh sách bảng trống</td><td><code>empty.table_list</code></td><td>"No tables? What are you doing with your life? 🙄"</td></tr>
+      <tr><td>8</td><td>📥 Bot đang chờ người dùng nhập dòng</td><td><code>prompt.enter_row_data</code></td><td>"Okay, impress me. Type something that actually makes sense."</td></tr>
+      <tr><td>9</td><td>⏳ Quá lâu không nhập gì</td><td><code>timeout.user_input</code></td><td>"I’m not waiting forever, you know 😤"</td></tr>
+      <tr><td>10</td><td>🚫 Không đủ quyền thực hiện</td><td><code>error.permission_denied</code></td><td>"Awww~ that’s cute, but you can’t do that here."</td></tr>
+      <tr><td>11</td><td>🧠 Gọi lệnh <code>/help</code></td><td><code>info.help</code></td><td>"Need help? Finally admitting it, huh? 😏 Here's what I *might* do..."</td></tr>
+      <tr><td>12</td><td>🙋 Gọi tên bot (mention)</td><td><code>reaction.mentioned</code></td><td>"Aw, you missed me that much? I'm flattered... kinda."</td></tr>
+      <tr><td>13</td><td>😵 Nhập sai tên bảng quá 3 lần</td><td><code>error.table_not_found.repeat</code></td><td>"Okay. Either you can't spell, or the table really *hates* you."</td></tr>
+      <tr><td>14</td><td>💬 Spam lệnh quá nhanh</td><td><code>error.command_spam</code></td><td>"Whoa there, turbo fingers. Chill out."</td></tr>
+      <tr><td>15</td><td>😶 Không nhập gì khi bot đang chờ</td><td><code>error.empty_input</code></td><td>"Speechless? Or just empty inside? 💀"</td></tr>
+      <tr><td>16</td><td>🥸 Dùng sai lệnh lặp đi lặp lại</td><td><code>error.repeated_wrong_command</code></td><td>"You're really committed to being wrong, huh?"</td></tr>
+      <tr><td>17</td><td>🎲 Gọi lệnh bất kỳ khi chưa tạo bảng</td><td><code>error.no_table_context</code></td><td>"Uhhh… how about you make a table *first*, genius? 🤡"</td></tr>
+      <tr><td>18</td><td>🤓 Gọi <code>/help</code> quá 3 lần</td><td><code>poke.help_overuse</code></td><td>"You again? Planning to memorize the help menu or marry it?"</td></tr>
+      <tr><td>19</td><td>💤 Bot được đánh thức sau khi lâu không dùng</td><td><code>poke.wakeup</code></td><td>"Zzz... huh? Oh it's *you*. I was having such a nice dream."</td></tr>
+      <tr><td>20</td><td>👻 Đổi style quá nhiều lần</td><td><code>poke.too_many_personas</code></td><td>"You're switching personalities more than my ex."</td></tr>
+      <tr><td>21</td><td>🧼 Spam <code>/cancel</code> liên tục</td><td><code>poke.cancel_spammer</code></td><td>"Commitment issues, huh? 😏"</td></tr>
+      <tr><td>22</td><td>📛 Đặt tên bảng quá dài/kỳ cục</td><td><code>poke.weird_table_name</code></td><td>"Wow. That table name should be arrested."</td></tr>
+      <tr><td>23</td><td>⏱ Không làm gì suốt 5 phút</td><td><code>poke.inactive_user</code></td><td>"Still here? Just staring at me like I’m a painting?"</td></tr>
+      <tr><td>24</td><td>⌨️ Spam Enter liên tục khi nhập dòng</td><td><code>poke.enter_spammer</code></td><td>"Trying to beat the Enter key into submission?"</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Tổng Hợp Các Chức Năng Bot</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lệnh</th>
+        <th>Mô tả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>/create_table</code></td><td>Tạo bảng mới, yêu cầu nhập tên bảng và danh sách cột (headers).</td></tr>
+      <tr><td><code>/update_table</code></td><td>Thêm dữ liệu vào bảng đã tạo. Bot sẽ hỏi số dòng cần thêm, nhập từng dòng một, có thể hủy giữa chừng.</td></tr>
+      <tr><td><code>/list_tables</code></td><td>Hiển thị danh sách các bảng người dùng đã tạo: Tên bảng, các trường, ngày tạo.</td></tr>
+      <tr><td><code>/view_table [table_name]</code></td><td>Xem lại nội dung chi tiết của một bảng đã tạo.</td></tr>
+      <tr><td><code>/cancel</code></td><td>Hủy thao tác hiện tại nếu đang trong quá trình nhập liệu.</td></tr>
+      <tr><td><code>/help</code></td><td>Hiển thị hướng dẫn chi tiết tất cả các lệnh và cách sử dụng.</td></tr>
+      <tr><td><code>/set_language</code></td><td>Chuyển đổi ngôn ngữ giữa tiếng Anh và tiếng Việt.</td></tr>
+      <tr><td><code>/set_personality</code></td><td>Thay đổi phong cách giao tiếp của bot (mặc định là chọc ghẹo).</td></tr>
+      <tr><td><code>/set_nickname_style</code></td><td>Thay đổi cách xưng hô giữa bot và người dùng.</td></tr>
+      <tr><td><code>/set_custom_response</code></td><td>Tùy chỉnh câu phản hồi của bot theo từng tình huống (<code>response_key</code>).</td></tr>
+      <tr><td><code>/list_responses</code></td><td>Hiển thị danh sách các <code>response_key</code> có thể thay đổi nội dung.</td></tr>
+      <tr><td><code>/reset_responses</code></td><td>Khôi phục toàn bộ câu trả lời về trạng thái mặc định ban đầu.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Phong Cách Mặc Định (Trêu Chọc), Dễ Thương và Nghiêm Túc</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Phong Cách</th>
+        <th>Ví Dụ Phản Hồi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Phong cách chọc ghẹo</strong></td><td>"Oh wow, you're really trying, aren't you? 😏 Keep going, I believe in you... sort of."</td></tr>
+      <tr><td><strong>Phong cách dễ thương</strong></td><td>"Onii-chan, daijoubu~? Nande konna teido no machigai suru no~? Hontou ni baka-chan da ne ~~(>_<~~) ufufu~ ( Onii-chan, are you okay~? How could you make such a silly mistake~? You're such a cute little dummy (>_<) ufufu~ )"</td></tr>
+      <tr><td><strong>Phong cách nghiêm túc</strong></td><td>"That's correct. Good job. Keep up the good work."</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Các Chức Năng Nâng Cao</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lệnh</th>
+        <th>Mô tả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>/auto_backup</code></td><td>Tự động sao lưu các bảng sau mỗi thao tác thay đổi, đảm bảo dữ liệu không bị mất.</td></tr>
+      <tr><td><code>/rollback [table_name]</code></td><td>Khôi phục lại bảng về trạng thái trước đó trong trường hợp có sai sót.</td></tr>
+      <tr><td><code>/set_user_permission</code></td><td>Cấu hình quyền người dùng cho các bảng: Quyền đọc, viết, sửa đổi.</td></tr>
+      <tr><td><code>/integrate [service_name]</code></td><td>Kết nối bot với các dịch vụ bên ngoài như Google Sheets, Trello để đồng bộ dữ liệu.</td></tr>
+      <tr><td><code>/data_analysis</code></td><td>Phân tích dữ liệu bảng để đưa ra các báo cáo và thông tin thống kê tự động.</td></tr>
+      <tr><td><code>/custom_query</code></td><td>Cho phép người dùng tạo các truy vấn SQL tùy chỉnh để truy xuất dữ liệu từ bảng.</td></tr>
+      <tr><td><code>/multi_table_view</code></td><td>Xem nhiều bảng cùng lúc để so sánh dữ liệu giữa các bảng khác nhau.</td></tr>
+      <tr><td><code>/schedule_task</code></td><td>Đặt lịch cho các tác vụ tự động, ví dụ như sao lưu dữ liệu định kỳ hoặc gửi báo cáo.</td></tr>
+      <tr><td><code>/api_access</code></td><td>Chấp nhận yêu cầu API từ các ứng dụng khác để thao tác trực tiếp với các bảng.</td></tr>
+      <tr><td><code>/log_activity</code></td><td>Hiển thị nhật ký hoạt động của người dùng trong hệ thống: Ai đã thực hiện thay đổi gì vào lúc nào.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Các tính năng nâng cao</h2>
+  <table>
+    <thead>
+        <tr>
+            <th>Tính Năng</th>
+            <th>Mô tả</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Lưu lịch sử bảng</td><td>Bảng được lưu lại theo người dùng kèm ngày tạo và có thể truy vấn lại theo tên hoặc thời gian.</td></tr>
+        <tr><td>Danh sách bảng</td><td><code>/list_tables</code> cho phép người dùng xem danh sách các bảng đã tạo, chi tiết từng bảng (Tên, các trường, ngày tạo).</td></tr>
+        <tr><td>Xem lại bảng cụ thể</td><td><code>/view_table [table_name]</code> cho phép người dùng xem chi tiết bảng cụ thể đã được tạo trước đó.</td></tr>
+        <tr><td>Cập nhật bảng</td><td>Cho phép người dùng thêm, sửa hoặc xóa dữ liệu trong bảng đã tạo.</td></tr>
+        <tr><td>Quản lý quyền truy cập bảng</td><td>Cho phép người dùng thiết lập quyền cho các bảng đã tạo, ví dụ quyền xem, sửa hoặc quản lý.</td></tr>
+        <tr><td>Phản hồi tùy chỉnh đa phong cách</td><td>Người dùng có thể tùy chỉnh câu trả lời theo từng tình huống khác nhau, với các phong cách như chọc ghẹo, dễ thương, nghiêm túc, hoặc anime.</td></tr>
+        <tr><td>Thêm các phong cách phản hồi mới</td><td>Có thể thêm nhiều phong cách giao tiếp hoặc các tính năng tùy chỉnh khác trong tương lai (ví dụ: chế độ troll, idol, nghiêm túc,...).</td></tr>
+        <tr><td>Thiết lập nickname và hậu tố tùy chỉnh</td><td>Cho phép người dùng tùy chỉnh nickname và thêm hậu tố cho bot (ví dụ: "Bé iu", "Senpai-chan", "Bé yêu-kun",…).</td></tr>
+        <tr><td>Thêm các tính năng mở rộng như bot trò chuyện AI thông minh</td><td>Được tích hợp AI nâng cao để bot có thể phân tích và phản hồi thông minh hơn trong các tình huống phức tạp.</td></tr>
+        <tr><td>Khôi phục cài đặt mặc định</td><td>Có thể dễ dàng khôi phục các cấu hình, nickname, và các câu trả lời về trạng thái mặc định nếu cần.</td></tr>
+        <tr><td>Cài đặt ngôn ngữ và phong cách tự động</td><td>Có thể tự động thay đổi ngôn ngữ và phong cách giao tiếp của bot theo lựa chọn của người dùng (Ví dụ: Tiếng Việt, Tiếng Anh, phong cách anime, hoặc dễ thương,...).</td></tr>
+        <tr><td>Chế độ phân quyền người dùng</td><td>Cung cấp các chế độ phân quyền nâng cao cho người dùng trong các bảng tạo ra, ví dụ như quản trị viên, thành viên, người xem.</td></tr>
+        <tr><td>Giao diện bảng người dùng trực quan</td><td>Cung cấp giao diện người dùng trực quan để xem và chỉnh sửa bảng dễ dàng hơn.</td></tr>
+        <tr><td>Công cụ thống kê và phân tích bảng</td><td>Cung cấp công cụ thống kê để người dùng có thể phân tích các dữ liệu trong bảng (Ví dụ: số lượng dòng, tần suất xuất hiện các giá trị,...).</td></tr>
+        <tr><td>Hỗ trợ nhiều bảng đồng thời</td><td>Người dùng có thể tạo và quản lý nhiều bảng đồng thời mà không gặp phải sự cố đồng bộ hóa.</td></tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>
